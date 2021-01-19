@@ -253,7 +253,37 @@ def setup_model(x, ModelID, parm_cstr, optimize_resistance_and_load, *args):
         parm['d_0'] = x[6]
         nPar = 6
     elif 37 <= ModelID <= 54:
-        control_type = 'acc_linear'
+        control_type = 'acc_linear_v'
+        spacing_type = 'v_cth'
+        parm['k_1'] = x[0]
+        parm['k_2'] = x[1]
+        parm['d_0'] = x[2]
+        parm['t_h'] = x[3]
+        parm['v_set'] = x[4]
+        nPar = 4
+    elif 55 <= ModelID <= 72:
+        control_type = 'acc_linear_v'
+        spacing_type = 'v_fvdm'
+        parm['k_1'] = x[0]
+        parm['k_2'] = x[1]
+        parm['d_0'] = x[2]
+        parm['t_h'] = x[3]
+        parm['v_set'] = x[4]
+        nPar = 4
+    elif 73 <= ModelID <= 90:
+        control_type = 'acc_linear_v'
+        spacing_type = 'v_gipps'
+        parm['k_1'] = x[0]
+        parm['k_2'] = x[1]
+        parm['d_0'] = x[2]
+        parm['t_h'] = x[3]
+        parm['v_set'] = x[4]
+        parm['acc_a_min'] = -x[5]
+        parm['teta'] = x[6]
+        parm['est_a_min_p'] = -x[7]
+        nPar = 7
+    elif 91 <= ModelID <= 108:
+        control_type = 'acc_linear_d'
         spacing_type = 'd_cth'
         parm['k_p'] = x[0]
         parm['k_v'] = x[1]
@@ -266,8 +296,8 @@ def setup_model(x, ModelID, parm_cstr, optimize_resistance_and_load, *args):
         # parm['acc_a_min'] = -x[8]
         # nPar = 8  
         nPar = 6
-    elif 55 <= ModelID <= 72:
-        control_type = 'acc_linear'
+    elif 109 <= ModelID <= 126:
+        control_type = 'acc_linear_d'
         spacing_type = 'd_idm_des'
         parm['k_p'] = x[0]
         parm['k_v'] = x[1]
@@ -279,8 +309,8 @@ def setup_model(x, ModelID, parm_cstr, optimize_resistance_and_load, *args):
         parm['acc_a_max'] = x[7]
         parm['acc_a_min'] = -x[8]
         nPar = 8
-    elif 73 <= ModelID <= 90:
-        control_type = 'acc_linear'
+    elif 127 <= ModelID <= 144:
+        control_type = 'acc_linear_d'
         spacing_type = 'd_gipps_eq'
         parm['k_p'] = x[0]
         parm['k_v'] = x[1]

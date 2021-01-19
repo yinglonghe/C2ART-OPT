@@ -4,7 +4,7 @@ from numba import njit
 
 
 @njit(nogil=True)
-def linear_acc(
+def linear_acc_d(
         state_pre_veh_p, # State of pre veh
         state_ego_veh_p, # State of ego veh
         spacing_type,
@@ -30,7 +30,7 @@ def linear_acc(
     if spacing_type == 'd_cth':
         accel_max = args[0][0]
         accel_min = args[0][1]
-        spacing_des = sp.constant_time_headway(
+        spacing_des = sp.constant_time_headway_spacing(
                             speed_ego_veh,
                             d_0,
                             t_h)
@@ -68,6 +68,70 @@ def linear_acc(
         accel_cmd = accel_des
     else:
         accel_cmd = min(k_set * (v_set - speed_ego_veh), accel_des)
+
+    return accel_cmd
+
+
+@njit(nogil=True)
+def linear_acc_v(
+        state_pre_veh_p, # State of pre veh
+        state_ego_veh_p, # State of ego veh
+        spacing_type,
+        len_pre_veh,
+        k_1,
+        k_2,
+        v_set,
+        d_0, 
+        t_h, *args):
+
+    pos_pre_veh = state_pre_veh_p[0]
+    speed_pre_veh = state_pre_veh_p[1]
+    accel_pre_veh = state_pre_veh_p[2]
+
+    pos_ego_veh = state_ego_veh_p[0]
+    speed_ego_veh = state_ego_veh_p[1]
+    accel_ego_veh = state_ego_veh_p[2]
+
+    spacing = pos_pre_veh - pos_ego_veh - len_pre_veh
+
+    if spacing_type == 'v_cth':
+        accel_max = args[0][0]
+        accel_min = args[0][1]
+        speed_des = sp.constant_time_headway_speed(
+                            speed_ego_veh,
+                            spacing,
+                            d_0,
+                            t_h,
+                            v_set)
+
+    if spacing_type == 'v_fvdm':
+        accel_max = args[0][0]
+        accel_min = args[0][1]
+        speed_des = sp.fvdm_speed(
+                            speed_ego_veh,
+                            spacing,
+                            d_0,
+                            t_h,
+                            v_set)
+        
+    if spacing_type == 'v_gipps':
+        teta = args[0][0]
+        accel_min = args[0][1]
+        accel_min_pre_veh_est = args[0][2]
+        speed_des = sp.gipps_speed(
+                            speed_ego_veh,
+                            spacing,
+                            d_0,
+                            t_h,
+                            v_set,
+                            teta,
+                            accel_min,
+                            accel_min_pre_veh_est)
+
+    delta_speed_pre = speed_pre_veh - speed_ego_veh
+    delta_speed_des = speed_des - speed_ego_veh
+
+    accel_cmd = k_1 * delta_speed_pre + k_2 * delta_speed_des
 
     return accel_cmd
 

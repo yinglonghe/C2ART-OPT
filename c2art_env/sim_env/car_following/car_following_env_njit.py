@@ -54,7 +54,7 @@ def run(parm, flow_ctrl, mfc_curve, data_exp, data_track, *args):
     perception_delay = parm['perception_delay']     # # *
     len_pre_veh = parm['l_i_1']
 
-    if control_type == 'acc_linear' and  spacing_type == 'd_cth':
+    if control_type == 'acc_linear_d' and  spacing_type == 'd_cth':
         parm_acc = np.array([
             parm['k_p'],        # 0 *
             parm['k_v'],        # 1 *
@@ -66,7 +66,7 @@ def run(parm, flow_ctrl, mfc_curve, data_exp, data_track, *args):
             parm['acc_a_max'],  # 7
             parm['acc_a_min']   # 8
         ])
-    elif control_type == 'acc_linear' and spacing_type == 'd_idm_des':
+    elif control_type == 'acc_linear_d' and spacing_type == 'd_idm_des':
         parm_acc = np.array([
             parm['k_p'],        # 0 *
             parm['k_v'],        # 1 *
@@ -78,7 +78,7 @@ def run(parm, flow_ctrl, mfc_curve, data_exp, data_track, *args):
             parm['acc_a_max'],  # 7 *
             parm['acc_a_min']   # 8 *
         ])
-    elif control_type == 'acc_linear' and spacing_type == 'd_gipps_eq':
+    elif control_type == 'acc_linear_d' and spacing_type == 'd_gipps_eq':
         parm_acc = np.array([
             parm['k_p'],        # 0 *
             parm['k_v'],        # 1 *
@@ -91,6 +91,38 @@ def run(parm, flow_ctrl, mfc_curve, data_exp, data_track, *args):
             parm['acc_a_min'],  # 8 *
             parm['est_a_min_p'],# 9 *
             parm['acc_a_max']   # 10    ADDED
+        ])
+    elif control_type == 'acc_linear_v' and spacing_type == 'v_cth':
+        parm_acc = np.array([
+            parm['k_1'],        # 0 *
+            parm['k_2'],        # 1 *
+            parm['d_0'],        # 2 *
+            parm['t_h'],        # 3 *
+            parm['v_set'],      # 4 *
+            parm['acc_a_max'],  # 5
+            parm['acc_a_min']   # 6
+        ])
+    elif control_type == 'acc_linear_v' and spacing_type == 'v_fvdm':
+        parm_acc = np.array([
+            parm['k_1'],        # 0 *
+            parm['k_2'],        # 1 *
+            parm['d_0'],        # 2 *
+            parm['t_h'],        # 3 *
+            parm['v_set'],      # 4 *
+            parm['acc_a_max'],  # 5
+            parm['acc_a_min']   # 6
+        ])
+    elif control_type == 'acc_linear_v' and spacing_type == 'v_gipps':
+        parm_acc = np.array([
+            parm['k_1'],        # 0 *
+            parm['k_2'],        # 1 *
+            parm['d_0'],        # 2 *
+            parm['t_h'],        # 3 *
+            parm['v_set'],      # 4 *
+            parm['teta'],       # 5 *
+            parm['acc_a_min'],  # 6 *
+            parm['est_a_min_p'],# 7 *
+            parm['acc_a_max']   # 8    ADDED
         ])
     elif control_type == 'acc_idm' and spacing_type == 'd_idm_des':
         parm_acc = np.array([

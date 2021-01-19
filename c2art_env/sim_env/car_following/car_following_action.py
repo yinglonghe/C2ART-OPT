@@ -47,7 +47,7 @@ def step(
     ##################
     # ACC controller #
     ##################
-    if control_type == 'acc_linear':
+    if control_type == 'acc_linear_d':
         if spacing_type == 'd_cth':
             # Calibrating
             k_p = parm_ctrl[0]
@@ -94,7 +94,7 @@ def step(
 
             parm_args = np.array([teta, ctrl_a_min, accel_min_pre_veh_est])
 
-        accel_cmd = ctrl.linear_acc(
+        accel_cmd = ctrl.linear_acc_d(
                     state_pre_veh_p,    # State of pre veh
                     state_ego_veh_p,    # State of ego veh
                     spacing_type,
@@ -103,6 +103,60 @@ def step(
                     k_v,
                     k_a,
                     k_set,
+                    v_set,
+                    d_0,
+                    t_h,
+                    parm_args           # *args[0]
+        )
+
+    elif control_type == 'acc_linear_v':
+        if spacing_type == 'v_cth':
+            # Calibrating
+            k_1 = parm_ctrl[0]
+            k_2 = parm_ctrl[1]
+            d_0 = parm_ctrl[2]
+            t_h = parm_ctrl[3]
+            v_set = parm_ctrl[4]
+            # Not calibrating
+            ctrl_a_max = parm_ctrl[5]
+            ctrl_a_min = parm_ctrl[6]
+
+            # parm_args = np.empty(1, np.float64)
+            parm_args = np.array([ctrl_a_max, ctrl_a_min])  
+        elif spacing_type == 'v_fvdm':
+            # Calibrating
+            k_1 = parm_ctrl[0]
+            k_2 = parm_ctrl[1]
+            d_0 = parm_ctrl[2]
+            t_h = parm_ctrl[3]
+            v_set = parm_ctrl[4]
+            # Not calibrating
+            ctrl_a_max = parm_ctrl[5]
+            ctrl_a_min = parm_ctrl[6]
+
+            parm_args = np.array([ctrl_a_max, ctrl_a_min])            
+        elif spacing_type == 'v_gipps':
+            # Calibrating
+            k_1 = parm_ctrl[0]
+            k_2 = parm_ctrl[1]
+            d_0 = parm_ctrl[2]
+            t_h = parm_ctrl[3]
+            v_set = parm_ctrl[4]
+            teta = parm_ctrl[5]
+            ctrl_a_min = parm_ctrl[6]
+            accel_min_pre_veh_est = parm_ctrl[7]
+            # Not calibrating
+            ctrl_a_max = parm_ctrl[8]
+
+            parm_args = np.array([teta, ctrl_a_min, accel_min_pre_veh_est])
+
+        accel_cmd = ctrl.linear_acc_v(
+                    state_pre_veh_p,    # State of pre veh
+                    state_ego_veh_p,    # State of ego veh
+                    spacing_type,
+                    len_pre_veh,        # Length of pre veh
+                    k_1,
+                    k_2,
                     v_set,
                     d_0,
                     t_h,

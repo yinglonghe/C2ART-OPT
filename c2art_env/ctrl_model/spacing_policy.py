@@ -3,7 +3,7 @@ from numba import njit
 
 
 @njit(nogil=True)
-def constant_time_headway(speed_ego_veh, d_0, t_h, *args):
+def constant_time_headway_spacing(speed_ego_veh, d_0, t_h, *args):
 
     spacing_des = d_0 + t_h * speed_ego_veh
 
@@ -24,6 +24,55 @@ def gipps_eq_spacing(speed_ego_veh, d_0, t_h, teta, accel_min_ego_veh, accel_min
     spacing_des = d_0 + (t_h + teta) * speed_ego_veh + 0.5 * speed_ego_veh**2 * (1/(-accel_min_ego_veh) - 1/(-accel_min_pre_veh))
 
     return spacing_des
+
+
+@njit(nogil=True)
+def constant_time_headway_speed(speed_ego_veh, spacing, d_0, t_h, v_set, *args):
+
+    if spacing < d_0:
+        speed_des = 0
+    elif spacing >= d_0 and spacing <= d_0 + t_h*v_set:
+        speed_des = (spacing - d_0) / t_h
+    elif spacing > d_0 + t_h*v_set:
+        speed_des = v_set
+
+    return speed_des
+
+
+@njit(nogil=True)
+def fvdm_speed(speed_ego_veh, spacing, d_0, t_h, v_set, *args):
+
+    if spacing < d_0:
+        speed_des = 0
+    elif spacing >= d_0 and spacing <= d_0 + t_h*v_set:
+        speed_des = 0.5 * v_set * (1 - np.cos(np.pi * (spacing-d_0) / (t_h*v_set)))
+    elif spacing > d_0 + t_h*v_set:
+        speed_des = v_set
+
+    return speed_des
+
+
+@njit(nogil=True)
+def gipps_speed(
+    speed_ego_veh,
+    spacing,
+    d_0,
+    t_h,
+    v_set,
+    teta,
+    accel_min,
+    accel_min_pre_veh_est,
+    *args):
+
+    speed_des = (t_h + teta) / (1/accel_min_pre_veh_est - 1/accel_min) * (1 - np.sqrt(1 - 2*(spacing-d_0)*(1/accel_min_pre_veh_est - 1/accel_min) / (t_h + teta)**2))
+
+    if speed_des < 0:
+        speed_des = 0
+
+    if speed_des > v_set:
+        speed_des = v_set
+
+    return speed_des
 
 
 # if __name__ == "__main__":
