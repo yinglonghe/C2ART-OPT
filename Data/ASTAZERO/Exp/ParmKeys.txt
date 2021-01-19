@@ -1,0 +1,90 @@
+1	6	delta	T_h	v_set	acc_a_max	acc_a_min	d_0										
+2	6	delta	T_h	v_set	acc_a_max	acc_a_min	d_0										
+3	6	delta	T_h	v_set	acc_a_max	acc_a_min	d_0										
+4	7	delta	T_h	v_set	acc_a_max	acc_a_min	d_0	tau									
+5	7	delta	T_h	v_set	acc_a_max	acc_a_min	d_0	tau									
+6	7	delta	T_h	v_set	acc_a_max	acc_a_min	d_0	tau									
+7	11	delta	T_h	v_set	acc_a_max	acc_a_min	d_0	tau	veh_load	f0	f1	f2					
+8	11	delta	T_h	v_set	acc_a_max	acc_a_min	d_0	tau	veh_load	f0	f1	f2					
+9	11	delta	T_h	v_set	acc_a_max	acc_a_min	d_0	tau	veh_load	f0	f1	f2					
+10	7	delta	T_h	v_set	acc_a_max	acc_a_min	d_0	perception_delay									
+11	7	delta	T_h	v_set	acc_a_max	acc_a_min	d_0	perception_delay									
+12	7	delta	T_h	v_set	acc_a_max	acc_a_min	d_0	perception_delay									
+13	8	delta	T_h	v_set	acc_a_max	acc_a_min	d_0	perception_delay	tau								
+14	8	delta	T_h	v_set	acc_a_max	acc_a_min	d_0	perception_delay	tau								
+15	8	delta	T_h	v_set	acc_a_max	acc_a_min	d_0	perception_delay	tau								
+16	12	delta	T_h	v_set	acc_a_max	acc_a_min	d_0	perception_delay	tau	veh_load	f0	f1	f2				
+17	12	delta	T_h	v_set	acc_a_max	acc_a_min	d_0	perception_delay	tau	veh_load	f0	f1	f2				
+18	12	delta	T_h	v_set	acc_a_max	acc_a_min	d_0	perception_delay	tau	veh_load	f0	f1	f2				
+19	7	T_h	teta	acc_a_max	v_set	acc_a_min	est_a_min_p	d_0									
+20	7	T_h	teta	acc_a_max	v_set	acc_a_min	est_a_min_p	d_0									
+21	7	T_h	teta	acc_a_max	v_set	acc_a_min	est_a_min_p	d_0									
+22	8	T_h	teta	acc_a_max	v_set	acc_a_min	est_a_min_p	d_0	tau								
+23	8	T_h	teta	acc_a_max	v_set	acc_a_min	est_a_min_p	d_0	tau								
+24	8	T_h	teta	acc_a_max	v_set	acc_a_min	est_a_min_p	d_0	tau								
+25	12	T_h	teta	acc_a_max	v_set	acc_a_min	est_a_min_p	d_0	tau	veh_load	f0	f1	f2				
+26	12	T_h	teta	acc_a_max	v_set	acc_a_min	est_a_min_p	d_0	tau	veh_load	f0	f1	f2				
+27	12	T_h	teta	acc_a_max	v_set	acc_a_min	est_a_min_p	d_0	tau	veh_load	f0	f1	f2				
+28	8	T_h	teta	acc_a_max	v_set	acc_a_min	est_a_min_p	d_0	perception_delay								
+29	8	T_h	teta	acc_a_max	v_set	acc_a_min	est_a_min_p	d_0	perception_delay								
+30	8	T_h	teta	acc_a_max	v_set	acc_a_min	est_a_min_p	d_0	perception_delay								
+31	9	T_h	teta	acc_a_max	v_set	acc_a_min	est_a_min_p	d_0	perception_delay	tau							
+32	9	T_h	teta	acc_a_max	v_set	acc_a_min	est_a_min_p	d_0	perception_delay	tau							
+33	9	T_h	teta	acc_a_max	v_set	acc_a_min	est_a_min_p	d_0	perception_delay	tau							
+34	13	T_h	teta	acc_a_max	v_set	acc_a_min	est_a_min_p	d_0	perception_delay	tau	veh_load	f0	f1	f2			
+35	13	T_h	teta	acc_a_max	v_set	acc_a_min	est_a_min_p	d_0	perception_delay	tau	veh_load	f0	f1	f2			
+36	13	T_h	teta	acc_a_max	v_set	acc_a_min	est_a_min_p	d_0	perception_delay	tau	veh_load	f0	f1	f2			
+37	7	k_p	k_v	k_a	k_set	d_0	t_h	v_set									
+38	7	k_p	k_v	k_a	k_set	d_0	t_h	v_set									
+39	7	k_p	k_v	k_a	k_set	d_0	t_h	v_set									
+40	8	k_p	k_v	k_a	k_set	d_0	t_h	v_set	tau								
+41	8	k_p	k_v	k_a	k_set	d_0	t_h	v_set	tau								
+42	8	k_p	k_v	k_a	k_set	d_0	t_h	v_set	tau								
+43	12	k_p	k_v	k_a	k_set	d_0	t_h	v_set	tau	veh_load	f0	f1	f2				
+44	12	k_p	k_v	k_a	k_set	d_0	t_h	v_set	tau	veh_load	f0	f1	f2				
+45	12	k_p	k_v	k_a	k_set	d_0	t_h	v_set	tau	veh_load	f0	f1	f2				
+46	8	k_p	k_v	k_a	k_set	d_0	t_h	v_set	perception_delay								
+47	8	k_p	k_v	k_a	k_set	d_0	t_h	v_set	perception_delay								
+48	8	k_p	k_v	k_a	k_set	d_0	t_h	v_set	perception_delay								
+49	9	k_p	k_v	k_a	k_set	d_0	t_h	v_set	perception_delay	tau							
+50	9	k_p	k_v	k_a	k_set	d_0	t_h	v_set	perception_delay	tau							
+51	9	k_p	k_v	k_a	k_set	d_0	t_h	v_set	perception_delay	tau							
+52	13	k_p	k_v	k_a	k_set	d_0	t_h	v_set	perception_delay	tau	veh_load	f0	f1	f2			
+53	13	k_p	k_v	k_a	k_set	d_0	t_h	v_set	perception_delay	tau	veh_load	f0	f1	f2			
+54	13	k_p	k_v	k_a	k_set	d_0	t_h	v_set	perception_delay	tau	veh_load	f0	f1	f2			
+55	9	k_p	k_v	k_a	k_set	d_0	t_h	v_set	acc_a_max	acc_a_min							
+56	9	k_p	k_v	k_a	k_set	d_0	t_h	v_set	acc_a_max	acc_a_min							
+57	9	k_p	k_v	k_a	k_set	d_0	t_h	v_set	acc_a_max	acc_a_min							
+58	10	k_p	k_v	k_a	k_set	d_0	t_h	v_set	acc_a_max	acc_a_min	tau						
+59	10	k_p	k_v	k_a	k_set	d_0	t_h	v_set	acc_a_max	acc_a_min	tau						
+60	10	k_p	k_v	k_a	k_set	d_0	t_h	v_set	acc_a_max	acc_a_min	tau						
+61	14	k_p	k_v	k_a	k_set	d_0	t_h	v_set	acc_a_max	acc_a_min	tau	veh_load	f0	f1	f2		
+62	14	k_p	k_v	k_a	k_set	d_0	t_h	v_set	acc_a_max	acc_a_min	tau	veh_load	f0	f1	f2		
+63	14	k_p	k_v	k_a	k_set	d_0	t_h	v_set	acc_a_max	acc_a_min	tau	veh_load	f0	f1	f2		
+64	10	k_p	k_v	k_a	k_set	d_0	t_h	v_set	acc_a_max	acc_a_min	perception_delay						
+65	10	k_p	k_v	k_a	k_set	d_0	t_h	v_set	acc_a_max	acc_a_min	perception_delay						
+66	10	k_p	k_v	k_a	k_set	d_0	t_h	v_set	acc_a_max	acc_a_min	perception_delay						
+67	11	k_p	k_v	k_a	k_set	d_0	t_h	v_set	acc_a_max	acc_a_min	perception_delay	tau					
+68	11	k_p	k_v	k_a	k_set	d_0	t_h	v_set	acc_a_max	acc_a_min	perception_delay	tau					
+69	11	k_p	k_v	k_a	k_set	d_0	t_h	v_set	acc_a_max	acc_a_min	perception_delay	tau					
+70	15	k_p	k_v	k_a	k_set	d_0	t_h	v_set	acc_a_max	acc_a_min	perception_delay	tau	veh_load	f0	f1	f2	
+71	15	k_p	k_v	k_a	k_set	d_0	t_h	v_set	acc_a_max	acc_a_min	perception_delay	tau	veh_load	f0	f1	f2	
+72	15	k_p	k_v	k_a	k_set	d_0	t_h	v_set	acc_a_max	acc_a_min	perception_delay	tau	veh_load	f0	f1	f2	
+73	10	k_p	k_v	k_a	k_set	d_0	t_h	v_set	acc_a_min	teta	est_a_min_p						
+74	10	k_p	k_v	k_a	k_set	d_0	t_h	v_set	acc_a_min	teta	est_a_min_p						
+75	10	k_p	k_v	k_a	k_set	d_0	t_h	v_set	acc_a_min	teta	est_a_min_p						
+76	11	k_p	k_v	k_a	k_set	d_0	t_h	v_set	acc_a_min	teta	est_a_min_p	tau					
+77	11	k_p	k_v	k_a	k_set	d_0	t_h	v_set	acc_a_min	teta	est_a_min_p	tau					
+78	11	k_p	k_v	k_a	k_set	d_0	t_h	v_set	acc_a_min	teta	est_a_min_p	tau					
+79	15	k_p	k_v	k_a	k_set	d_0	t_h	v_set	acc_a_min	teta	est_a_min_p	tau	veh_load	f0	f1	f2	
+80	15	k_p	k_v	k_a	k_set	d_0	t_h	v_set	acc_a_min	teta	est_a_min_p	tau	veh_load	f0	f1	f2	
+81	15	k_p	k_v	k_a	k_set	d_0	t_h	v_set	acc_a_min	teta	est_a_min_p	tau	veh_load	f0	f1	f2	
+82	11	k_p	k_v	k_a	k_set	d_0	t_h	v_set	acc_a_min	teta	est_a_min_p	perception_delay					
+83	11	k_p	k_v	k_a	k_set	d_0	t_h	v_set	acc_a_min	teta	est_a_min_p	perception_delay					
+84	11	k_p	k_v	k_a	k_set	d_0	t_h	v_set	acc_a_min	teta	est_a_min_p	perception_delay					
+85	12	k_p	k_v	k_a	k_set	d_0	t_h	v_set	acc_a_min	teta	est_a_min_p	perception_delay	tau				
+86	12	k_p	k_v	k_a	k_set	d_0	t_h	v_set	acc_a_min	teta	est_a_min_p	perception_delay	tau				
+87	12	k_p	k_v	k_a	k_set	d_0	t_h	v_set	acc_a_min	teta	est_a_min_p	perception_delay	tau				
+88	16	k_p	k_v	k_a	k_set	d_0	t_h	v_set	acc_a_min	teta	est_a_min_p	perception_delay	tau	veh_load	f0	f1	f2
+89	16	k_p	k_v	k_a	k_set	d_0	t_h	v_set	acc_a_min	teta	est_a_min_p	perception_delay	tau	veh_load	f0	f1	f2
+90	16	k_p	k_v	k_a	k_set	d_0	t_h	v_set	acc_a_min	teta	est_a_min_p	perception_delay	tau	veh_load	f0	f1	f2
