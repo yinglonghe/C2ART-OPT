@@ -83,6 +83,8 @@ def linear_acc_v(
         v_set,
         d_0, 
         t_h, *args):
+    
+    gipps_sus = 1
 
     pos_pre_veh = state_pre_veh_p[0]
     speed_pre_veh = state_pre_veh_p[1]
@@ -118,7 +120,7 @@ def linear_acc_v(
         teta = args[0][0]
         accel_min = args[0][1]
         accel_min_pre_veh_est = args[0][2]
-        speed_des = sp.gipps_speed(
+        speed_des, gipps_sus = sp.gipps_speed(
                             speed_ego_veh,
                             spacing,
                             d_0,
@@ -133,7 +135,7 @@ def linear_acc_v(
 
     accel_cmd = k_1 * delta_speed_pre + k_2 * delta_speed_des
 
-    return accel_cmd
+    return accel_cmd, gipps_sus
 
 
 @njit(nogil=True)

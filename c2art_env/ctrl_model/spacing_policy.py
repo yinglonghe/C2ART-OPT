@@ -64,22 +64,27 @@ def gipps_speed(
     accel_min_pre_veh_est,
     *args):
 
-    if accel_min < accel_min_pre_veh_est:
+    if accel_min < accel_min_pre_veh_est:       # Both are negative
         symAxis = (t_h + teta) / (1/(-accel_min_pre_veh_est) - 1/(-accel_min))
         radicand = 1 - 2*(spacing - d_0)*(1/(-accel_min_pre_veh_est) - 1/(-accel_min)) / (t_h + teta)**2
-        if v_set <= symAxis:
-            speed_des = symAxis * (1 - np.sqrt(max(0, radicand)))
+        if v_set > symAxis or radicand < 0:
+            speed_des = 0
+            gipps_sus = 0
         else:
-            if radicand >= 0:
-                speed_des = symAxis * (1 - np.sqrt(radicand))
-            else:
-                speed_des = symAxis * (1 + np.sqrt(-radicand))
-    elif accel_min > accel_min_pre_veh_est:
+            speed_des = symAxis * (1 - np.sqrt(radicand))
+            gipps_sus = 1
+    elif accel_min > accel_min_pre_veh_est:     # Both are negative
         symAxis = (t_h + teta) / (1/(-accel_min_pre_veh_est) - 1/(-accel_min))
         radicand = 1 - 2*(spacing - d_0)*(1/(-accel_min_pre_veh_est) - 1/(-accel_min)) / (t_h + teta)**2
-        speed_des = symAxis * (1 - np.sqrt(max(0, radicand)))
-    else:
+        if radicand < 0:
+            speed_des = 0
+            gipps_sus = 0
+        else:
+            speed_des = symAxis * (1 - np.sqrt(radicand))
+            gipps_sus = 1
+    elif accel_min == accel_min_pre_veh_est:    # Both are negative
         speed_des = (spacing - d_0) / (t_h + teta)
+        gipps_sus = 1
 
     if speed_des < 0:
         speed_des = 0
@@ -87,7 +92,7 @@ def gipps_speed(
     if speed_des > v_set:
         speed_des = v_set
 
-    return speed_des
+    return speed_des, gipps_sus
 
 
 # if __name__ == "__main__":

@@ -150,7 +150,7 @@ def step(
 
             parm_args = np.array([teta, ctrl_a_min, accel_min_pre_veh_est])
 
-        accel_cmd = ctrl.linear_acc_v(
+        accel_cmd, gipps_sus = ctrl.linear_acc_v(
                     state_pre_veh_p,    # State of pre veh
                     state_ego_veh_p,    # State of ego veh
                     spacing_type,
