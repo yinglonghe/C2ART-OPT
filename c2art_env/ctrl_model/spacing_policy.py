@@ -64,7 +64,22 @@ def gipps_speed(
     accel_min_pre_veh_est,
     *args):
 
-    speed_des = (t_h + teta) / (1/accel_min_pre_veh_est - 1/accel_min) * (1 - np.sqrt(1 - 2*(spacing-d_0)*(1/accel_min_pre_veh_est - 1/accel_min) / (t_h + teta)**2))
+    if accel_min < accel_min_pre_veh_est:
+        symAxis = (t_h + teta) / (1/(-accel_min_pre_veh_est) - 1/(-accel_min))
+        radicand = 1 - 2*(spacing - d_0)*(1/(-accel_min_pre_veh_est) - 1/(-accel_min)) / (t_h + teta)**2
+        if v_set <= symAxis:
+            speed_des = symAxis * (1 - np.sqrt(max(0, radicand)))
+        else:
+            if radicand >= 0:
+                speed_des = symAxis * (1 - np.sqrt(radicand))
+            else:
+                speed_des = symAxis * (1 + np.sqrt(-radicand))
+    elif accel_min > accel_min_pre_veh_est:
+        symAxis = (t_h + teta) / (1/(-accel_min_pre_veh_est) - 1/(-accel_min))
+        radicand = 1 - 2*(spacing - d_0)*(1/(-accel_min_pre_veh_est) - 1/(-accel_min)) / (t_h + teta)**2
+        speed_des = symAxis * (1 - np.sqrt(max(0, radicand)))
+    else:
+        speed_des = (spacing - d_0) / (t_h + teta)
 
     if speed_des < 0:
         speed_des = 0
