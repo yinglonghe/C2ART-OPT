@@ -223,7 +223,7 @@ def run(parm, flow_ctrl, mfc_curve, data_exp, data_track, *args):
     # Hard constraints for calibration & validation #
     #################################################
     if success == 0:
-        gof = [float(100000)]*10
+        gof = [float(100000)]*14
         errors_d = np.empty(1, np.float64)
         errors_v = np.empty(1, np.float64)
         errors_a = np.empty(1, np.float64)
@@ -254,6 +254,22 @@ def run(parm, flow_ctrl, mfc_curve, data_exp, data_track, *args):
     nrmse_d_v = nrmse_d + nrmse_v
     nrmse_d_v_a = nrmse_d + nrmse_v + nrmse_a
 
+    u_d = rmse_d / (np.sqrt((state_spacing[ipd+1:]**2).mean()) + np.sqrt((exp_spacing[ipd+1:]**2).mean()))
+    u_v = rmse_v / (np.sqrt((exp_ego_veh[1][ipd+1:]**2).mean()) + np.sqrt((state_ego_veh[1][ipd+1:]**2).mean()))
+    u_a = rmse_a / (np.sqrt((exp_ego_veh[2][ipd+1:]**2).mean()) + np.sqrt((state_ego_veh[2][ipd+1:]**2).mean()))
+    u_d_v = u_d + u_v
+    u_d_v_a = u_d + u_v + u_a
+
+    errors_norm_d = env.utils.min_max_normalize(state_spacing[ipd+1:]) - env.utils.min_max_normalize(exp_spacing[ipd+1:])
+    errors_norm_v = env.utils.min_max_normalize(exp_ego_veh[1][ipd+1:]) - env.utils.min_max_normalize(state_ego_veh[1][ipd+1:])
+    errors_norm_a = env.utils.min_max_normalize(exp_ego_veh[2][ipd+1:]) - env.utils.min_max_normalize(state_ego_veh[2][ipd+1:])
+    rmse_norm_d = np.sqrt((errors_norm_d**2).mean())
+    rmse_norm_v = np.sqrt((errors_norm_v**2).mean())
+    rmse_norm_a = np.sqrt((errors_norm_a**2).mean())
+
+    rmse_norm_d_v = rmse_norm_d + rmse_norm_v
+    rmse_norm_d_v_a = rmse_norm_d + rmse_norm_v + rmse_norm_a
+
     gof = [
         float(rmse_a),          # 0
         float(rmse_v),          # 1
@@ -265,6 +281,10 @@ def run(parm, flow_ctrl, mfc_curve, data_exp, data_track, *args):
         float(rmspe_std_v_d),   # 7
         float(nrmse_d_v),       # 8
         float(nrmse_d_v_a),     # 9
+        float(u_d_v),           # 10
+        float(u_d_v_a),         # 11
+        float(rmse_norm_d_v),   # 12
+        float(rmse_norm_d_v_a), # 13
     ]
 
     return gof, count_cut_acc, count_cut_dec, success, comfort, terminal, \
@@ -282,7 +302,7 @@ def car_follwing_iterate(ipd, dt, time, exp_pre_veh, exp_ego_veh, len_pre_veh,\
 
     count_cut_acc = 0
     count_cut_dec = 0
-    gipps_sus = 1
+    flag_scs = 1
     success = 1
 
     for i in range(len(time)):
@@ -309,7 +329,7 @@ def car_follwing_iterate(ipd, dt, time, exp_pre_veh, exp_ego_veh, len_pre_veh,\
 
                     state_ego_veh[i] = np.array([p_i, exp_ego_veh[i][1], exp_ego_veh[i][2]])
         else:
-            state_next, count_cut_acc_local, count_cut_dec_local, gipps_sus = cf_act.step(
+            state_next, count_cut_acc_local, count_cut_dec_local, flag_scs = cf_act.step(
                 exp_pre_veh[i-ipd-1],   # State of pre veh
                 state_ego_veh[i-ipd-1],
                 state_ego_veh[i-1],      # State of ego veh
@@ -332,7 +352,7 @@ def car_follwing_iterate(ipd, dt, time, exp_pre_veh, exp_ego_veh, len_pre_veh,\
         # Update and check spacing #
         ############################
         state_spacing[i] =  exp_pre_veh[i][0] - state_ego_veh[i][0] - len_pre_veh
-        if state_spacing[i] <= 0 or gipps_sus == 0:
+        if state_spacing[i] <= 0 or flag_scs == 0:
             success = 0
             break
         #####################

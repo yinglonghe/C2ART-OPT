@@ -84,7 +84,7 @@ def linear_acc_v(
         d_0, 
         t_h, *args):
     
-    gipps_sus = 1
+    flag_scs = 1
 
     pos_pre_veh = state_pre_veh_p[0]
     speed_pre_veh = state_pre_veh_p[1]
@@ -120,7 +120,7 @@ def linear_acc_v(
         teta = args[0][0]
         accel_min = args[0][1]
         accel_min_pre_veh_est = args[0][2]
-        speed_des, gipps_sus = sp.gipps_speed(
+        speed_des, flag_scs = sp.gipps_speed(
                             speed_ego_veh,
                             spacing,
                             d_0,
@@ -135,7 +135,7 @@ def linear_acc_v(
 
     accel_cmd = k_1 * delta_speed_pre + k_2 * delta_speed_des
 
-    return accel_cmd, gipps_sus
+    return accel_cmd, flag_scs
 
 
 @njit(nogil=True)
@@ -200,9 +200,9 @@ def gipps_acc(
     tau = t_h
 
     # Detect the negative radical in simulation
-    gipps_sus = 1
+    flag_scs = 1
     if accel_min**2 * (0.5 * tau + teta)**2 - accel_min * (2*spacing - speed_ego_veh*tau - speed_pre_veh**2/accel_min_pre_veh_est) < -1e-10:
-        gipps_sus = 0
+        flag_scs = 0
 
     speed_ego_veh_cmd = min(
         speed_ego_veh + 2.5 * accel_max * tau * (1 - speed_ego_veh / v_set) * (0.025 + speed_ego_veh / v_set)**0.5,
@@ -214,5 +214,5 @@ def gipps_acc(
     
     accel_cmd = (speed_ego_veh_cmd - speed_ego_veh_current) / tau
 
-    return accel_cmd, gipps_sus
+    return accel_cmd, flag_scs
 

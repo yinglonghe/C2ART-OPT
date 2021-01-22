@@ -43,7 +43,13 @@ def main(ModelID):
         'RMSPE(stdV)',      # GOF-7
         'RMSPE(stdV+S)',    # GOF-8
         'NRMSE(S+V)',       # GOF-9
-        'NRMSE(S+V+A)']     # GOF-10
+        'NRMSE(S+V+A)',     # GOF-10
+        'U(S+V)',           # GOF-11
+        'U(S+V+A)',         # GOF-12
+        'RMSE(Sn+Vn)',      # GOF-13
+        'RMSE(Sn+Vn+An)',   # GOF-14
+    ]
+    
 
     del Veh_Names, pathRoot, Project, Database
     #################################################
@@ -187,12 +193,7 @@ def main(ModelID):
 
 # %%
 if __name__ == "__main__":
-    # import tqdm
-    # with multiprocessing.Pool(4) as p:
-    #     r = list(tqdm.tqdm(p.imap(main, range(1, 91)), total=90))
-
-    for i in list(range(90,91)):
-    # for i in [30, 33, 36, 48, 51, 54, 69, 72, 84, 87, 90]:
+    for i in list(range(1,91)):
         start_time = time.time()
         main(i)
         print('MODEL ' + str(i) + ' DONE!')

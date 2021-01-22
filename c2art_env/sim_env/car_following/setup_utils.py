@@ -675,6 +675,8 @@ def validation(
                 os.makedirs(pathExport, exist_ok=True)
 
             export_time_series(
+                x,
+                GOF_Names[CalGOFIDX]+': '+str(utils.my_round(gof[CalGOFIDX], 3))+' ',
                 debug,
                 fileName,
                 pathExport,
@@ -728,6 +730,8 @@ def chained_simulation(
 
 
 def export_time_series(
+    x,
+    gofText,
     debug,
     fileName,
     pathExport,
@@ -785,8 +789,8 @@ def export_time_series(
         fig.update_yaxes(title_text='Acceleration [m/s2]', row=3, col=1)
 
         if htmlFig:
-            fig.update_layout(title_text=fileName)
+            fig.update_layout(title_text=fileName+'<br>'+gofText+str([ '%.1f' % elem for elem in x ]))
             plot(fig, filename=os.path.join(pathExport, fileName+'.html'), auto_open=False)
         else:
-            fig.update_layout(title_text=fileName, autosize=False, width=900, height=600)
+            fig.update_layout(title_text=fileName+'<br>'+gofText+str([ '%.1f' % elem for elem in x ]), autosize=False, width=900, height=600)
             fig.write_image(os.path.join(pathExport, fileName+'.png'))

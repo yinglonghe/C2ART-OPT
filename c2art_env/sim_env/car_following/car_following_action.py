@@ -21,7 +21,7 @@ def step(
 
     count_cut_acc = 0
     count_cut_dec = 0
-    gipps_sus = 1
+    flag_scs = 1
     ########################################
     # Stop and go control (state override) #
     ########################################
@@ -150,7 +150,7 @@ def step(
 
             parm_args = np.array([teta, ctrl_a_min, accel_min_pre_veh_est])
 
-        accel_cmd, gipps_sus = ctrl.linear_acc_v(
+        accel_cmd, flag_scs = ctrl.linear_acc_v(
                     state_pre_veh_p,    # State of pre veh
                     state_ego_veh_p,    # State of ego veh
                     spacing_type,
@@ -197,7 +197,7 @@ def step(
         accel_min_pre_veh_est = parm_ctrl[6]
         # Not calibrating
 
-        accel_cmd, gipps_sus = ctrl.gipps_acc(
+        accel_cmd, flag_scs = ctrl.gipps_acc(
                     state_pre_veh_p, # State of pre veh
                     state_ego_veh_p, # State of ego veh
                     state_ego_veh[1],
@@ -308,4 +308,4 @@ def step(
         accel_next,
         dt
     )
-    return state_next, count_cut_acc, count_cut_dec, gipps_sus
+    return state_next, count_cut_acc, count_cut_dec, flag_scs

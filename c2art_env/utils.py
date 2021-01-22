@@ -172,6 +172,10 @@ def numba_wrap_to_pi(x):
     return ((x + np.pi) % (2 * np.pi)) - np.pi
 
 
+@njit
+def min_max_normalize(x):
+    return (x-min(x))/(max(x)-min(x))
+
 # @jit(parallel=True)
 # def mean_numba(a):
 #     if a.shape[0] == 1:
