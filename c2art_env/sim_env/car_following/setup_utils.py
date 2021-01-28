@@ -253,36 +253,6 @@ def setup_model(x, ModelID, parm_cstr, optimize_resistance_and_load, *args):
         parm['d_0'] = x[6]
         nPar = 6
     elif 37 <= ModelID <= 54:
-        control_type = 'acc_linear_v'
-        spacing_type = 'v_cth'
-        parm['k_1'] = x[0]
-        parm['k_2'] = x[1]
-        parm['d_0'] = x[2]
-        parm['t_h'] = x[3]
-        parm['v_set'] = x[4]
-        nPar = 4
-    elif 55 <= ModelID <= 72:
-        control_type = 'acc_linear_v'
-        spacing_type = 'v_fvdm'
-        parm['k_1'] = x[0]
-        parm['k_2'] = x[1]
-        parm['d_0'] = x[2]
-        parm['t_h'] = x[3]
-        parm['v_set'] = x[4]
-        nPar = 4
-    elif 73 <= ModelID <= 90:
-        control_type = 'acc_linear_v'
-        spacing_type = 'v_gipps'
-        parm['k_1'] = x[0]
-        parm['k_2'] = x[1]
-        parm['d_0'] = x[2]
-        parm['t_h'] = x[3]
-        parm['v_set'] = x[4]
-        parm['acc_a_min'] = -x[5]
-        parm['teta'] = x[6]
-        parm['est_a_min_p'] = -x[7]
-        nPar = 7
-    elif 91 <= ModelID <= 108:
         control_type = 'acc_linear_d'
         spacing_type = 'd_cth'
         parm['k_p'] = x[0]
@@ -296,7 +266,7 @@ def setup_model(x, ModelID, parm_cstr, optimize_resistance_and_load, *args):
         # parm['acc_a_min'] = -x[8]
         # nPar = 8  
         nPar = 6
-    elif 109 <= ModelID <= 126:
+    elif 55 <= ModelID <= 72:
         control_type = 'acc_linear_d'
         spacing_type = 'd_idm_des'
         parm['k_p'] = x[0]
@@ -309,7 +279,7 @@ def setup_model(x, ModelID, parm_cstr, optimize_resistance_and_load, *args):
         parm['acc_a_max'] = x[7]
         parm['acc_a_min'] = -x[8]
         nPar = 8
-    elif 127 <= ModelID <= 144:
+    elif 73 <= ModelID <= 90:
         control_type = 'acc_linear_d'
         spacing_type = 'd_gipps_eq'
         parm['k_p'] = x[0]
@@ -323,6 +293,36 @@ def setup_model(x, ModelID, parm_cstr, optimize_resistance_and_load, *args):
         parm['teta'] = x[8]
         parm['est_a_min_p'] = -x[9]
         nPar = 9
+    elif 91 <= ModelID <= 108:
+        control_type = 'acc_linear_v'
+        spacing_type = 'v_cth'
+        parm['k_1'] = x[0]
+        parm['k_2'] = x[1]
+        parm['d_0'] = x[2]
+        parm['t_h'] = x[3]
+        parm['v_set'] = x[4]
+        nPar = 4
+    elif 109 <= ModelID <= 126:
+        control_type = 'acc_linear_v'
+        spacing_type = 'v_fvdm'
+        parm['k_1'] = x[0]
+        parm['k_2'] = x[1]
+        parm['d_0'] = x[2]
+        parm['t_h'] = x[3]
+        parm['v_set'] = x[4]
+        nPar = 4
+    elif 127 <= ModelID <= 144:
+        control_type = 'acc_linear_v'
+        spacing_type = 'v_gipps'
+        parm['k_1'] = x[0]
+        parm['k_2'] = x[1]
+        parm['d_0'] = x[2]
+        parm['t_h'] = x[3]
+        parm['v_set'] = x[4]
+        parm['acc_a_min'] = -x[5]
+        parm['teta'] = x[6]
+        parm['est_a_min_p'] = -x[7]
+        nPar = 7
     ###
 
     delay_class_id = ModelID % 18
@@ -789,8 +789,8 @@ def export_time_series(
         fig.update_yaxes(title_text='Acceleration [m/s2]', row=3, col=1)
 
         if htmlFig:
-            fig.update_layout(title_text=fileName+'<br>'+gofText+str([ '%.1f' % elem for elem in x ]))
+            fig.update_layout(title_text=fileName+' '+gofText+'<br>'+str([ '%.1f' % elem for elem in x ]))
             plot(fig, filename=os.path.join(pathExport, fileName+'.html'), auto_open=False)
         else:
-            fig.update_layout(title_text=fileName+'<br>'+gofText+str([ '%.1f' % elem for elem in x ]), autosize=False, width=900, height=600)
+            fig.update_layout(title_text=fileName+' '+gofText+'<br>'+str([ '%.1f' % elem for elem in x ]), autosize=False, width=900, height=600)
             fig.write_image(os.path.join(pathExport, fileName+'.png'))

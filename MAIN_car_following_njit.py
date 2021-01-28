@@ -19,7 +19,7 @@ def main(ModelID):
     Precision = 5   # Decimal
     pathRoot = os.path.dirname(__file__)
     pathInput = os.path.join(pathRoot, 'Data', Project, Database)
-    pathResult = os.path.join(pathRoot, 'PyResults', Project, Database)
+    pathResult = os.path.join(pathRoot, 'PyResults_2021-01-21_b', Project, Database)
     Exp_Names = [
         'ASta_040719_platoon5',  # P-1 (ID)
         'ASta_040719_platoon6',  # P-2
@@ -34,22 +34,24 @@ def main(ModelID):
         'Audi A6',          # C-4
         'Mercedes A class'] # C-5
     GOF_Names = [
-        'RMSE(A)',          # GOF-1 (ID)
+        'RMSE(S)',          # GOF-1 (ID)
         'RMSE(V)',          # GOF-2
-        'RMSE(S)',          # GOF-3
-        'RMSPE(V)',         # GOF-4
-        'RMSPE(S)',         # GOF-5
-        'RMSPE(V+S)',       # GOF-6
-        'RMSPE(stdV)',      # GOF-7
-        'RMSPE(stdV+S)',    # GOF-8
+        'RMSE(A)',          # GOF-3
+        'RMSPE(S)',         # GOF-4
+        'RMSPE(V)',         # GOF-5
+        'NRMSE(S)',         # GOF-6
+        'NRMSE(V)',         # GOF-7
+        'NRMSE(A)',         # GOF-8
         'NRMSE(S+V)',       # GOF-9
         'NRMSE(S+V+A)',     # GOF-10
-        'U(S+V)',           # GOF-11
-        'U(S+V+A)',         # GOF-12
-        'RMSE(Sn+Vn)',      # GOF-13
-        'RMSE(Sn+Vn+An)',   # GOF-14
+        'U(S)',             # GOF-11
+        'U(V)',             # GOF-12
+        'U(A)',             # GOF-13
+        'U(S+V)',           # GOF-14
+        'U(S+V+A)',         # GOF-15
+        'RMSE(Sn+Vn)',      # GOF-16
+        'RMSE(Sn+Vn+An)',   # GOF-17
     ]
-    
 
     del Veh_Names, pathRoot, Project, Database
     #################################################
@@ -101,7 +103,7 @@ def main(ModelID):
     ###########################
     # Optimization parameters #
     ###########################
-    optimizationStatus = 0
+    optimizationStatus = 1
 
     for CalGOFIDX in CalGOF_IDXs:
         ################
@@ -193,7 +195,12 @@ def main(ModelID):
 
 # %%
 if __name__ == "__main__":
-    for i in list(range(1,91)):
+    import tqdm
+
+    # with multiprocessing.Pool(8) as p:
+    #     r = list(tqdm.tqdm(p.imap(main, range(1, 91)), total=90))
+    
+    for i in tqdm.tqdm(list(range(90,91))):
         start_time = time.time()
         main(i)
         print('MODEL ' + str(i) + ' DONE!')

@@ -223,7 +223,7 @@ def run(parm, flow_ctrl, mfc_curve, data_exp, data_track, *args):
     # Hard constraints for calibration & validation #
     #################################################
     if success == 0:
-        gof = [float(100000)]*14
+        gof = [float(100000)]*17
         errors_d = np.empty(1, np.float64)
         errors_v = np.empty(1, np.float64)
         errors_a = np.empty(1, np.float64)
@@ -260,31 +260,34 @@ def run(parm, flow_ctrl, mfc_curve, data_exp, data_track, *args):
     u_d_v = u_d + u_v
     u_d_v_a = u_d + u_v + u_a
 
-    errors_norm_d = env.utils.min_max_normalize(state_spacing[ipd+1:]) - env.utils.min_max_normalize(exp_spacing[ipd+1:])
-    errors_norm_v = env.utils.min_max_normalize(exp_ego_veh[1][ipd+1:]) - env.utils.min_max_normalize(state_ego_veh[1][ipd+1:])
-    errors_norm_a = env.utils.min_max_normalize(exp_ego_veh[2][ipd+1:]) - env.utils.min_max_normalize(state_ego_veh[2][ipd+1:])
-    rmse_norm_d = np.sqrt((errors_norm_d**2).mean())
-    rmse_norm_v = np.sqrt((errors_norm_v**2).mean())
-    rmse_norm_a = np.sqrt((errors_norm_a**2).mean())
+    errors_dn = env.utils.min_max_normalize(state_spacing[ipd+1:], exp_spacing[ipd+1:]) - env.utils.min_max_normalize(exp_spacing[ipd+1:], exp_spacing[ipd+1:])
+    errors_vn = env.utils.min_max_normalize(exp_ego_veh[1][ipd+1:], exp_ego_veh[1][ipd+1:]) - env.utils.min_max_normalize(state_ego_veh[1][ipd+1:], exp_ego_veh[1][ipd+1:])
+    errors_an = env.utils.min_max_normalize(exp_ego_veh[2][ipd+1:], exp_ego_veh[2][ipd+1:]) - env.utils.min_max_normalize(state_ego_veh[2][ipd+1:], exp_ego_veh[2][ipd+1:])
+    rmse_dn = np.sqrt((errors_dn**2).mean())
+    rmse_vn = np.sqrt((errors_vn**2).mean())
+    rmse_an = np.sqrt((errors_an**2).mean())
 
-    rmse_norm_d_v = rmse_norm_d + rmse_norm_v
-    rmse_norm_d_v_a = rmse_norm_d + rmse_norm_v + rmse_norm_a
+    rmse_dn_vn = rmse_dn + rmse_vn
+    rmse_dn_vn_an = rmse_dn + rmse_vn + rmse_an
 
     gof = [
-        float(rmse_a),          # 0
+        float(rmse_d),          # 0
         float(rmse_v),          # 1
-        float(rmse_d),          # 2
-        float(rmspe_v),         # 3
-        float(rmspe_d),         # 4
-        float(rmspe_d_v),       # 5
-        float(rmspe_std_v),     # 6
-        float(rmspe_std_v_d),   # 7
+        float(rmse_a),          # 2
+        float(rmspe_d),         # 3
+        float(rmspe_v),         # 4
+        float(nrmse_d),         # 5
+        float(nrmse_v),         # 6
+        float(nrmse_a),         # 7
         float(nrmse_d_v),       # 8
         float(nrmse_d_v_a),     # 9
-        float(u_d_v),           # 10
-        float(u_d_v_a),         # 11
-        float(rmse_norm_d_v),   # 12
-        float(rmse_norm_d_v_a), # 13
+        float(u_d),             # 10
+        float(u_v),             # 11
+        float(u_a),             # 12
+        float(u_d_v),           # 13
+        float(u_d_v_a),         # 14
+        float(rmse_dn_vn),      # 15
+        float(rmse_dn_vn_an),   # 16
     ]
 
     return gof, count_cut_acc, count_cut_dec, success, comfort, terminal, \

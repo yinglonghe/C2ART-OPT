@@ -173,8 +173,8 @@ def numba_wrap_to_pi(x):
 
 
 @njit
-def min_max_normalize(x):
-    return (x-min(x))/(max(x)-min(x))
+def min_max_normalize(x, y):
+    return (x-min(y))/(max(y)-min(y))
 
 # @jit(parallel=True)
 # def mean_numba(a):

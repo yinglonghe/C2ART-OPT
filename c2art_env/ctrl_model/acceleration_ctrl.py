@@ -64,10 +64,10 @@ def linear_acc_d(
 
     accel_des = k_a * delta_accel + k_v * delta_speed - k_p * delta_spacing
 
-    if delta_spacing > 0:
-        accel_cmd = accel_des
-    else:
-        accel_cmd = min(k_set * (v_set - speed_ego_veh), accel_des)
+    # if delta_spacing > 0:
+    #     accel_cmd = accel_des
+    # else:
+    accel_cmd = min(k_set * (v_set - speed_ego_veh), accel_des)
 
     return accel_cmd
 
