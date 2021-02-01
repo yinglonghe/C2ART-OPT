@@ -526,7 +526,7 @@ def optimization(
     model = ga(cost_function, dimension=len(LB), \
         variable_boundaries=varbound,
         variable_type='real', 
-        function_timeout=100,
+        function_timeout=200,
         algorithm_parameters=algorithm_param,
         args=(
             ModelID,
