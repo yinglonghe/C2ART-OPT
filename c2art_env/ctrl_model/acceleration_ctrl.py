@@ -1,21 +1,22 @@
 from c2art_env.ctrl_model import spacing_policy as sp
 import numpy as np
 from numba import njit
+import c2art_env as env
 
 
 @njit(nogil=True)
 def linear_acc_d(
-        state_pre_veh_p, # State of pre veh
-        state_ego_veh_p, # State of ego veh
-        spacing_type,
-        len_pre_veh,
-        k_p,
-        k_v,
-        k_a,
-        k_set,
-        v_set,
-        d_0, 
-        t_h, *args):
+    state_pre_veh_p, # State of pre veh
+    state_ego_veh_p, # State of ego veh
+    spacing_type,
+    len_pre_veh,
+    k_p,
+    k_v,
+    k_a,
+    k_set,
+    v_set,
+    d_0,
+    t_h, *args):
 
     pos_pre_veh = state_pre_veh_p[0]
     speed_pre_veh = state_pre_veh_p[1]
@@ -74,15 +75,15 @@ def linear_acc_d(
 
 @njit(nogil=True)
 def linear_acc_v(
-        state_pre_veh_p, # State of pre veh
-        state_ego_veh_p, # State of ego veh
-        spacing_type,
-        len_pre_veh,
-        k_1,
-        k_2,
-        v_set,
-        d_0, 
-        t_h, *args):
+    state_pre_veh_p, # State of pre veh
+    state_ego_veh_p, # State of ego veh
+    spacing_type,
+    len_pre_veh,
+    k_1,
+    k_2,
+    v_set,
+    d_0,
+    t_h, *args):
     
     flag_scs = 1
 
@@ -140,16 +141,16 @@ def linear_acc_v(
 
 @njit(nogil=True)
 def idm_acc(
-        state_pre_veh_p, # State of pre veh
-        state_ego_veh_p, # State of ego veh
-        spacing_type,
-        len_pre_veh,
-        delta,
-        v_set,
-        d_0, 
-        t_h,
-        accel_max,
-        accel_min, *args):
+    state_pre_veh_p, # State of pre veh
+    state_ego_veh_p, # State of ego veh
+    spacing_type,
+    len_pre_veh,
+    delta,
+    v_set,
+    d_0,
+    t_h,
+    accel_max,
+    accel_min, *args):
 
     pos_pre_veh = state_pre_veh_p[0]
     speed_pre_veh = state_pre_veh_p[1]
@@ -177,18 +178,18 @@ def idm_acc(
 
 @njit(nogil=True)
 def gipps_acc(
-        state_pre_veh_p, # State of pre veh
-        state_ego_veh_p, # State of ego veh
-        speed_ego_veh_current,
-        # spacing_type,
-        len_pre_veh,
-        teta,
-        v_set,
-        d_0, 
-        t_h, 
-        accel_max,
-        accel_min,
-        accel_min_pre_veh_est, *args):
+    state_pre_veh_p, # State of pre veh
+    state_ego_veh_p, # State of ego veh
+    speed_ego_veh_current,
+    # spacing_type,
+    len_pre_veh,
+    teta,
+    v_set,
+    d_0,
+    t_h,
+    accel_max,
+    accel_min,
+    accel_min_pre_veh_est, *args):
 
     pos_pre_veh = state_pre_veh_p[0]
     speed_pre_veh = state_pre_veh_p[1]
@@ -216,3 +217,36 @@ def gipps_acc(
 
     return accel_cmd, flag_scs
 
+
+@njit(nogil=True)
+def pid_free_flow_acc(
+    k_p,
+    k_i,
+    k_d,
+    v_err,
+    v_err_i,
+    v_err_d,
+    turning_effect,
+    state_ego_veh_p,
+    curvature,
+    *args):
+
+    accel_cmd_a = k_p * v_err + k_i * v_err_i + k_d * v_err_d
+
+    if turning_effect == 'off':
+        accel_cmd = accel_cmd_a
+    elif turning_effect == 'on':
+        a_turning = args[0][0]
+        speed_ego_veh = state_ego_veh_p[1]
+
+        f_max = env.utils.interp_binary(
+            np.array([15, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130]),     # Speed (km/h)
+            np.array([0.40, 0.35, 0.28, 0.23, 0.19, 0.17, 0.15, 0.14, 0.13, 0.12, 0.11, 0.09, 0.08]),   # A Policy on Geometric Design of Highways and Streets 2011
+            speed_ego_veh * 3.6)    # Speed (km/h)
+
+        e_max = 1   # %
+        R_min = speed_ego_veh**2 / (9.799 * (0.01 * e_max + f_max))
+
+        accel_cmd = accel_cmd_a + a_turning * R_min * np.abs(curvature)
+
+    return accel_cmd

@@ -1,0 +1,8 @@
+ModelID:	0
+VehicleID:	1
+GOF:	7
+PopSize:	100
+Parallel:	1
+NumCPUs:	4
+OptimizeResistanceAndLoad:	1
+PythonVersion:	38

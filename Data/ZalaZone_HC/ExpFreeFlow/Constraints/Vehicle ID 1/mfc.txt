@@ -1,0 +1,10 @@
+veh_load: 250
+rolling_coef:   0.009
+aero_coef:  0.30
+res_coef_1: 0.84
+res_coef_2: -71.735
+res_coef_3: 2.7609
+ppar_0: 0.0045
+ppar_1: -0.1710
+ppar_2: -1.8835
+mh_base:    0.75
