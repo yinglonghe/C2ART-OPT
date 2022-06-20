@@ -49,7 +49,7 @@ def process_0_100_accelerations(selected_car, Models):
         for model_name in Models:
             if model_name == 'MFC':
                 veh_load = 75 * 0
-                _ , mfc_acc_curve, mfc_dec_curve, _, _, _, _ \
+                _, mfc_acc_curve, mfc_dec_curve, _, _, _, _, _ \
                     = msim.mfc_curves(
                         my_car,
                         carid,

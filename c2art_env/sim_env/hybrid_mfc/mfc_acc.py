@@ -266,7 +266,8 @@ def hybrid_curves(
         veh_mass,
         f0,
         f1,
-        f2):
+        f2,
+        hyd_mode):
     phi = car.phi
     max_power = car.max_power  # kW
     engine_max_power = int(car.engine_max_power)  # kW
@@ -288,6 +289,8 @@ def hybrid_curves(
         idle_engine_speed
     )
     full_load_torque = full_load_powers * 1000 * (full_load_speeds / 60 * 2 * np.pi) ** -1
+    car.ice_full_load = [full_load_speeds, full_load_torque]  # rpm, Nm
+
     speed_per_gear, acc_per_gear = [], []
     for j in range(len(gr)):
         speed_per_gear.append([])
@@ -332,6 +335,8 @@ def hybrid_curves(
             motor_full_load_torque.append(motor_max_torque)
         elif motor_full_load_speeds[k] > motor_base_speed:
             motor_full_load_torque.append((6e4 * motor_max_power) / (2 * np.pi * motor_full_load_speeds[k]))
+    car.em_full_load = np.array([motor_full_load_speeds, motor_full_load_torque])  # rpm, Nm
+
     motor_speed_per_gear, motor_acc_per_gear = [], []
     for j in range(len(gr)):
         motor_speed_per_gear.append([])
@@ -385,11 +390,14 @@ def hybrid_curves(
         em_acc[(sp_bins < start)] = 0
         em_acc[(sp_bins > stop)] = 0
 
-        tractive_acc = ice_acc + em_acc
+        if hyd_mode == "CS":
+            tractive_acc = ice_acc + em_acc
+        elif hyd_mode == "CD":
+            tractive_acc = em_acc
         tractive_acc[tractive_acc > Alimit] = Alimit
 
         final_acc = tractive_acc - car_res_curve(sp_bins)
         final_acc = final_acc / phi
         final_acc[final_acc < 0] = 0
         Res.append(interp1d(sp_bins, final_acc))
-    return Res, cs_acc_per_gear, (Start, Stop)
+    return Res, cs_acc_per_gear, (Start, Stop), car
