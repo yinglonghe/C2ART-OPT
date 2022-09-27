@@ -48,6 +48,7 @@ def mfc_main(
     
     df = pd.DataFrame()
     df['Spd [m/s]'] = veh_model_speed
+    df['AccelMax [m/s2]'] = veh_model_acc_max
     df['Accel [m/s2]'] = veh_model_acc
     df['Decel [m/s2]'] = veh_model_dec
     df.to_csv(os.path.join(res_path, 'ap_dp_curves.csv'), index=False)
@@ -72,7 +73,7 @@ def mfc_main(
         (interp1d(       # Acceleration scenario
             [0, 5250],  # Position (m)
             [veh_max_speed, veh_max_speed],  # Desired speed (m/s)
-            kind="next", fill_value="extrapolate",), 0, 30, 'acc'),
+            kind="next", fill_value="extrapolate",), 0, 100, 'acc'),
         (interp1d(
             [0, 5250],  # Position (m)
             [0, 0],  # Desired speed (m/s)
@@ -84,8 +85,8 @@ def mfc_main(
     x, v, a, v_des, gr_idx, trq_gr_in, w_gr_in, p_gr_in = \
         np.zeros(len(t)), np.zeros(len(t)), np.zeros(len(t)), np.zeros(len(t)), np.zeros(len(t)).astype(int), np.zeros(len(t)), np.zeros(len(t)), np.zeros(len(t))
     soc_ref, soc, fc, trq_ice, p_ice, p_fuel, trq_em, p_em, p_batt, i_batt, ef = \
-        np.ones(len(t))*0.5, np.zeros(len(t)), np.zeros(len(t)), np.zeros(len(t)), np.zeros(len(t)), np.zeros(len(t)), np.zeros(len(t)), np.zeros(len(t)), np.zeros(len(t)), np.zeros(len(t)), np.zeros(len(t))
-    soc0 = 0.5
+        np.ones(len(t))*0.3, np.zeros(len(t)), np.zeros(len(t)), np.zeros(len(t)), np.zeros(len(t)), np.zeros(len(t)), np.zeros(len(t)), np.zeros(len(t)), np.zeros(len(t)), np.zeros(len(t)), np.zeros(len(t))
+    soc0 = 0.8
     dw_gr_in = np.zeros(len(t))
 
     gs_cnt = 10
@@ -154,14 +155,16 @@ def mfc_main(
     a[0] = a[1]
 
     data1_plot = [
-        v, a, gr_idx, w_gr_in*60/(2*np.pi), trq_gr_in, p_gr_in*1e-3, dw_gr_in]
+        t, v_des, x, v, a, gr_idx, w_gr_in*60/(2*np.pi), trq_gr_in, p_gr_in*1e-3, dw_gr_in]
     data1_label = [
-        'v(m/s)', 'a(m/s2)', 'gr_idx', 'w_gr_in\n(rpm)', 'trq_gr_in\n(Nm)', 'p_gr_in\n(kW)', 'dw_gr_in']
+        'time(s)', 'vn(m/s)', 'x(m)', 'v(m/s)', 'a(m/s2)', 'gr_idx', 'w_gr_in\n(rpm)', 'trq_gr_in\n(Nm)', 'p_gr_in\n(kW)', 'dw_gr_in']
     fig, axs = plt.subplots(len(data1_plot), sharex=True, figsize=(11,6))
     for i in range(len(data1_plot)):
         axs[i].plot(t, data1_plot[i])
         if data1_label[i]=='v(m/s)':
             axs[i].plot(t, v_des, 'r--')
+        if data1_label[i] in ['time(s)', 'vn(m/s)']:
+            continue
         axs[i].set_ylabel(data1_label[i], rotation=0, labelpad=30)
         axs[i].grid()
     axs[i].set_xlabel('time(s)')
@@ -191,7 +194,8 @@ def mfc_main(
     plt.show()
             
     df = pd.DataFrame.from_dict(dict(zip(data1_label+data2_label, data1_plot+data2_plot)))
-    df.to_csv(os.path.join(res_path, 'sim_data_'+'driving_cycle_'+cycle_des+'.csv'))
+    df.to_csv(os.path.join(res_path, \
+        'ds'+str(round(driver_style,1)).replace('.', '')+'_gs'+str(round(gs_style,1)).replace('.', '')+'_'+hyd_mode+'_'+cycle_des+'.csv'), index=False)
 
 
 if __name__ == "__main__":
@@ -221,7 +225,7 @@ if __name__ == "__main__":
         hyd_mode = 'Na'
 
     driver_style = [1.0, 0.8, 0.6][0]
-    gs_style = [0.9, 0.7, 0.5][2]
+    gs_style = [1.0, 0.8, 0.6][0]
     veh_load = 75 * 0
 
     db = rno.load_db_to_dictionary(db_name)

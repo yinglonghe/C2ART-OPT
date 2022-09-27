@@ -15,7 +15,7 @@ from c2art_env.sim_env.hybrid_mfc.road_load_coefficients import compute_f_coeffi
 import c2art_env.sim_env.hybrid_mfc.mfc_acc as driver
 from c2art_env.sim_env.hybrid_mfc.driver_charact import driver_charact
 
-pid_aecms_ef = PID(Kp=25, Ki=0.06, Kd=0.004)
+pid_aecms_ef = PID(Kp=125, Ki=0.16, Kd=0.004)
 
 
 def energy_consumption_cd(
@@ -766,7 +766,7 @@ def mfc_curves(
                 gs_up[i] += 1
             if veh_model_speed[i]>gs_down_th[j]:
                 gs_down[i] += 1  
-    gs_th = interp1d(veh_model_speed, gs_up, kind='nearest')
+    gs_th = interp1d(veh_model_speed, gs_up, kind='nearest', fill_value="extrapolate")
 
     for k in range(len(veh_model_speed)):
         acc_temp = []
@@ -1002,11 +1002,12 @@ def get_sp_MFC(parameters, tp, sstart, sdes, rt, freq):
     mfc_dec_curve = parameters['mfc_dec_curve']
     will_acc_model = parameters['will_acc_model']
     overshoot = parameters['overshoot']
+    gs_th = parameters['gs_th']
     max_time = tp[-1] - tp[0]
     dt = 1 / freq
     n = int(np.ceil(max_time / dt) + 1)
     xp = np.arange(tp[0], tp[0] + n * dt, dt)
-    sp = sp_MFC(len(xp), sstart, sdes, rt, freq, mfc_acc_curve, mfc_dec_curve, will_acc_model, overshoot, driver_style)
+    sp = sp_MFC(len(xp), sstart, sdes, rt, freq, mfc_acc_curve, mfc_dec_curve, will_acc_model, overshoot, driver_style, gs_th)
 
     sp_mfc = np.interp(tp, xp, sp)
     return sp_mfc
@@ -1039,7 +1040,7 @@ def get_sp_IDM(parameters,tp,sstart,sdes, rt, freq, **kwargs):
     return sp
 
 
-def sp_MFC(n, sstart, sdes, rt, freq, acc_p_curve, dec_p_curve, will_acc_model, overshoot, driver_style):
+def sp_MFC(n, sstart, sdes, rt, freq, acc_p_curve, dec_p_curve, will_acc_model, overshoot, driver_style, gs_th):
     # rt = 0.5
     steps = int((rt / (1 / freq)) - 1)
     if steps > 0:
@@ -1048,7 +1049,24 @@ def sp_MFC(n, sstart, sdes, rt, freq, acc_p_curve, dec_p_curve, will_acc_model, 
     sp = [sstart]
     curr_speed = sstart
 
+    gs_cnt = 10
+    gear_prev = int(gs_th(curr_speed))
+    gear_curr = gear_prev
+
     for i in range(1, n):
+        gs_cnt += 1
+        if gs_cnt < 10:
+            gear_curr = gear_prev
+        else:
+            if int(gs_th(curr_speed))>gear_prev:
+                gear_curr = gear_prev+1
+                gs_cnt = 0
+            elif int(gs_th(curr_speed))<gear_prev:
+                gear_curr = gear_prev-1
+                gs_cnt = 0
+            else:
+                gear_curr = gear_prev
+
         if steps == 0:
             a0 = accMFC(curr_speed, sdes, driver_style, acc_p_curve, dec_p_curve, will_acc_model, overshoot)
 
@@ -1072,6 +1090,9 @@ def sp_MFC(n, sstart, sdes, rt, freq, acc_p_curve, dec_p_curve, will_acc_model, 
             else:
                 curr_speed += a_upd * dt
                 sp.append(curr_speed)
+
+        gear_prev = gear_curr
+
     return sp
 
 
@@ -1291,9 +1312,9 @@ def follow_leader_mfc(instance, tp, lsp, sim_step, start_dist, start_speed):
     will_acc_model = instance['will_acc_model']
     overshoot = instance['overshoot']
     if instance['mfc_curve'] == False:
-        _, acc_p_curve, dec_p_curve, _, _, _, _, _ \
+        _, acc_p_curve, dec_p_curve, _, _, _, _, _, gs_th \
             = mfc_curves(instance['car'], instance['car_id'], 
-            instance['hyd_mode'], instance['veh_load'])
+            instance['hyd_mode'], instance['veh_load'], instance['gs_style'])
     else:
         acc_p_curve = instance['mfc_curve'][0]
         dec_p_curve = instance['mfc_curve'][1]
@@ -1324,6 +1345,10 @@ def follow_leader_mfc(instance, tp, lsp, sim_step, start_dist, start_speed):
     yield sf_curr
 
 
+    gs_cnt = 10
+    gear_prev = int(gs_th(sf_prev))
+    gear_curr = gear_prev
+
     for i in range(1, len(tp)):
         if cycle == True:
             if dtf > dist_travelled:
@@ -1335,9 +1360,22 @@ def follow_leader_mfc(instance, tp, lsp, sim_step, start_dist, start_speed):
         dhf_interp = np.interp(round_RT, [ceil_RT, floor_RT], [dhf[-ceil_RT], dhf[-floor_RT]])
         shf_interp = np.interp(round_RT, [ceil_RT, floor_RT], [shf[-ceil_RT], shf[-floor_RT]])
 
+        gs_cnt += 1
+        if gs_cnt < 10:
+            gear_curr = gear_prev
+        else:
+            if int(gs_th(sf_prev))>gear_prev:
+                gear_curr = gear_prev+1
+                gs_cnt = 0
+            elif int(gs_th(sf_prev))<gear_prev:
+                gear_curr = gear_prev-1
+                gs_cnt = 0
+            else:
+                gear_curr = gear_prev
+
         sf_curr = mfc_calc_vel(sf_prev, shl_interp, sdes, dhf_interp, \
                                         sim_step, rt, shf_interp, driver_style, acc_p_curve, dec_p_curve, will_acc_model, \
-                                        overshoot)
+                                        overshoot, gs_cnt)
 
         sl_avg = (sl_prev + sl_curr) / 2
         sf_avg = (sf_prev + sf_curr) / 2
@@ -1359,6 +1397,7 @@ def follow_leader_mfc(instance, tp, lsp, sim_step, start_dist, start_speed):
         yield sf_curr
         sl_prev = sl_curr
         sf_prev = sf_curr
+        gear_prev = gear_curr
 
         shl = shl[1:]
         shl.append(sl_curr)
@@ -1413,7 +1452,7 @@ def idm_calc_vel(fol_v, lead_v, vn, dist, bn, an, sim_step, **kwargs):
 
 
 def mfc_calc_vel(fol_v, lead_v, vn, dist, sim_step, RT, prev_v, driver_style, acc_p_curve, dec_p_curve, will_acc_model,
-                       overshoot):
+                       overshoot, gs_cnt):
     min_dist = 2
     sim_step_RT = sim_step * RT
     msqrt = math.sqrt
@@ -1422,6 +1461,9 @@ def mfc_calc_vel(fol_v, lead_v, vn, dist, sim_step, RT, prev_v, driver_style, ac
     # if vn < fol_v:
     #     # potential_acc = acc_p_curve(fol_v) * driver_style * (1 - fol_v / vn) * np.power(max(0, 0.025 + fol_v / vn), 0.5)
     #     potential_acc = 2.5 * 6 * (1 - fol_v / vn) * np.power(max(0, 0.025 + fol_v / vn), 0.5)
+
+    if gs_cnt<3 and potential_acc>0:
+        potential_acc = 0
 
     new_vel = fol_v + potential_acc * sim_step
     if new_vel < 0:

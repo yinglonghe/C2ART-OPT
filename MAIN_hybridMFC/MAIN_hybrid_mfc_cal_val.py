@@ -163,6 +163,7 @@ def cal_val_traj(df1, df2, car, hyd_mode, res_path):
                 'mfc_curve': False,
                 'gs': False,
                 'driver_style': np.random.uniform(0, 1),
+                'gs_style': np.random.uniform(0, 1),
                 'followDistance': True,
                 'distance_cycle': cycle_dist_cubic,
                 'distTravelLimit': dist_travelled,
@@ -188,6 +189,7 @@ def cal_val_traj(df1, df2, car, hyd_mode, res_path):
             if model == msim.follow_leader_mfc:
                 # We need first to run Gipps to calibrate an, bn and rt
                 params_lmfit.add('driver_style', value=1, vary=True, min=0.1, max=1)
+                params_lmfit.add('gs_style', value=1, vary=True, min=0.1, max=1)
                 params_lmfit.add('bn', value=bn, vary=False, min=-4.0, max=-1)
                 params_lmfit.add('rt', value=rt, vary=False, min=1, max=20)
 
@@ -202,6 +204,12 @@ def cal_val_traj(df1, df2, car, hyd_mode, res_path):
         plt.plot(ldt_dist, lsp_dist, label='ref. vehicle')
         plt.plot(ldt_dist, lsp_dist_cycle, label='cycle')
         plt.title('Distance - Speed (part of a lap)', fontsize=18)
+        df = pd.DataFrame()
+        df['ldt_dist'] = ldt_dist
+        df['lsp_dist'] = lsp_dist
+        df['lsp_dist_cycle'] = lsp_dist_cycle
+        df['ltp_dist'] = ltp_dist
+        
         for model_name in Models:
             mfit = min_lmfit[model_name]
             model = Models[model_name]
@@ -225,6 +233,7 @@ def cal_val_traj(df1, df2, car, hyd_mode, res_path):
                     'rt': mfit.params['rt'].value,
                     # 'bn': mfit.params['bn'].value,
                     'driver_style': mfit.params['driver_style'].value,
+                    'gs_style': mfit.params['gs_style'].value,
                 }
 
             Params = collections.OrderedDict(sorted(Params.items()))
@@ -291,6 +300,12 @@ def cal_val_traj(df1, df2, car, hyd_mode, res_path):
             Models_results[model_name]['ap_dist'] = list(m_ap_dist)
             Models_results[model_name]['dt_dist'] = list(m_dt_dist)
             Models_results[model_name]['tp_dist'] = list(m_tp_dist)
+
+            df[model_name+'_sp_dist'] = Models_results[model_name]['sp_dist']
+            df[model_name+'_ap_dist'] = Models_results[model_name]['ap_dist']
+            df[model_name+'_dt_dist'] = Models_results[model_name]['dt_dist']
+            df[model_name+'_tp_dist'] = Models_results[model_name]['tp_dist']
+
             if model_name == 'Gipps':
                 linest = '-.'
             elif model_name == 'IDM':
@@ -305,6 +320,7 @@ def cal_val_traj(df1, df2, car, hyd_mode, res_path):
 
         plt.savefig(os.path.join(cal_res_path, '%s_models_distance_speed_part.png' % testDataset), dpi=150)
         plt.close(fig1)
+        df.to_csv(os.path.join(cal_res_path, '%s_models_part.csv' % testDataset), index=False)
 
         # Macro stats
         print('Average speed GT:%.2f' % np.mean(lsp_dist))
@@ -474,6 +490,14 @@ def cal_val_traj(df1, df2, car, hyd_mode, res_path):
         ax_time_speed.set_ylabel('Speed $(m/s)$')
         ax_time_speed.set_xlabel('Time $(s)$')
 
+        df = pd.DataFrame()
+        df['ldt_dist'] = ldt_dist
+        df['lsp_dist'] = lsp_dist
+        df['lsp_dist_cycle'] = lsp_dist_cycle
+        df['lap_dist'] = lap_dist
+        # df['ltp'] = ltp
+        # df['lsp'] = lsp
+
         for model_name in Models:
             model = Models[model_name]
             instance = {
@@ -492,6 +516,7 @@ def cal_val_traj(df1, df2, car, hyd_mode, res_path):
                 'mfc_curve': False,
                 'gs': False,
                 'driver_style': np.random.uniform(0, 1),
+                'gs_style': np.random.uniform(0, 1),
                 'followDistance': True,
                 'distance_cycle': cycle_dist_cubic,
                 'distTravelLimit': dist_travelled,
@@ -519,6 +544,8 @@ def cal_val_traj(df1, df2, car, hyd_mode, res_path):
                 Params = {
                     'rt': cal_res_df['rt'].loc[(cal_res_df.model == model_name) & (cal_res_df.file == CalibrateDataset)].values[0],
                     'driver_style': cal_res_df['driver_style'].loc[
+                        (cal_res_df.model == model_name) & (cal_res_df.file == CalibrateDataset)].values[0],
+                    'gs_style': cal_res_df['gs_style'].loc[
                         (cal_res_df.model == model_name) & (cal_res_df.file == CalibrateDataset)].values[0],
                 }
 
@@ -585,6 +612,11 @@ def cal_val_traj(df1, df2, car, hyd_mode, res_path):
             ax_dist_speed.plot(m_dt_dist, m_sp_dist, label='%s RMSE(time):%.3f'%(model_name, rmse_tp))
             ax_dist_acc.plot(m_dt_dist, m_ap_dist, label='%s RMSE(time):%.3f'%(model_name, rmse_tp))
             ax_time_speed.plot(m_tp_dist, m_sp_dist, label='%s RMSE(time):%.3f'%(model_name, rmse_tp))
+
+            df[model_name+'_m_dt_dist'] = m_dt_dist
+            df[model_name+'_m_sp_dist'] = m_sp_dist
+            df[model_name+'_m_ap_dist'] = m_ap_dist
+            df[model_name+'_m_tp_dist'] = m_tp_dist
 
         fig_dist_speed.subplots_adjust(left=0.10, bottom=0.10, right=0.90, top=0.95, hspace=0.20)
         ax_dist_speed.legend(bbox_to_anchor=(1.1, 1.05))

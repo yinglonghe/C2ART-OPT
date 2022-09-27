@@ -39,22 +39,24 @@ def process_0_100_accelerations(selected_car, Models):
     rt = 0.1
     will_acc_model = 'horizontal_b'  # gipps, idm, horizontal
     driver_style = 1
+    gs_style = 1
     overshoot = 0  # m/s NOT valid for horizontal wTa line
     over_f = 1.2  # surpassing (%) of the estimated acceleration curve of the vehicle
     freq = 10  # frequency
-    try:
+    if True:
         mfc_acc_curve = 0
         mfc_dec_curve = 0
 
         for model_name in Models:
             if model_name == 'MFC':
                 veh_load = 75 * 0
-                _, mfc_acc_curve, mfc_dec_curve, _, _, _, _, _ \
+                _, mfc_acc_curve, mfc_dec_curve, _, _, _, _, _, gs_th \
                     = msim.mfc_curves(
                         my_car,
                         carid,
                         hyd_mode,
-                        veh_load
+                        veh_load,
+                        gs_style,
                         )
 
         sstart = 0  # start speed
@@ -65,6 +67,8 @@ def process_0_100_accelerations(selected_car, Models):
 
         parameters = {
             'driver_style': driver_style,  ### Driver style for MFC [0,1]
+            'gs_style': gs_style,
+            'gs_th': gs_th,
             'mfc_acc_curve': mfc_acc_curve,  ### Acceleration curve MFC
             'mfc_dec_curve': mfc_dec_curve,  ### Deceleration curve MFC
             'will_acc_model': will_acc_model,  ### Will to accelerate
@@ -97,7 +101,7 @@ def process_0_100_accelerations(selected_car, Models):
             results_list_item.append(cnt_car_ok)
             results_list_item.append(cnt_car_over)
 
-    except:
+    else:
         error_car_list_item = carid
         print("Not able to compute %s curve for carid: %d" % (model_name, carid))
         return results_list_item, error_car_list_item
