@@ -102,7 +102,7 @@ if __name__ == "__main__":
     hyd_mode = ['Na', 'CD', 'CS'][2]  # CD/CS, ONLY VALID FOR HEV, Na = not applicable
 
     driver_style = [1.0, 0.8, 0.6]
-    driver_style_dc = [0, 1, 2]
+    driver_style_dc = [0, 1, 2] # Class driver_charact() in c2art_env/sim_env/hybrid_mfc/driver_charact.py
     gs_style = [0.9, 0.7, 0.5]
     veh_load = 75 * 0
 

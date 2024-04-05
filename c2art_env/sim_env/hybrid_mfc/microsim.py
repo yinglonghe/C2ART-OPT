@@ -691,10 +691,10 @@ def mfc_curves(
 
         curves = driver.gear_curves(
             car,
-            veh_mass,
-            f0,
-            f1,
-            f2
+            car.total_mass,
+            car.f0,
+            car.f1,
+            car.f2
         )
 
         car_info = 'ICEV: ' + car.model
@@ -705,10 +705,10 @@ def mfc_curves(
 
         curves = driver.ev_curves(
             car,
-            veh_mass,
-            f0,
-            f1,
-            f2
+            car.total_mass,
+            car.f0,
+            car.f1,
+            car.f2
         )
 
         car_info = 'EV: ' + car.model
@@ -719,27 +719,19 @@ def mfc_curves(
             car.final_drive = 4.438
             car.driveline_efficiency = 0.93
             ppar0, ppar1, ppar2 = 0.0058, -0.2700, -1.8835
+        elif car_id == 55559:
+            car.total_mass = 1698.0
+            car.f0, car.f1, car.f2 = 115.5, 0.106, 0.03217
+            ppar0, ppar1, ppar2 = 0.0045, -0.1710, -1.8835
         else:
             ppar0, ppar1, ppar2 = 0.0058, -0.2700, -1.8835
 
-        # if hyd_mode == 'CD':
-        #     curves = driver.ev_curves(
-        #         car,
-        #         veh_mass,
-        #         f0,
-        #         f1,
-        #         f2
-        #     )
-
-        #     car_info = 'HEV (CD): ' + car.model
-
-        # elif hyd_mode == 'CS':
         curves = driver.hybrid_curves(
             car,
-            veh_mass,
-            f0,
-            f1,
-            f2,
+            car.total_mass,
+            car.f0,
+            car.f1,
+            car.f2,
             hyd_mode
         )
 

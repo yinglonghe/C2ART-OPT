@@ -78,7 +78,7 @@ def mfc_main(
             [0, 5250],  # Position (m)
             [0, 0],  # Desired speed (m/s)
             kind="next", fill_value="extrapolate",), veh_max_speed, 20, 'dec'),
-        ][0]
+        ][2]        ### Changable
     
     dt = 0.1        # The simulation step in seconds
     t = np.arange(0, duration + dt, dt) # sample time series
@@ -86,7 +86,10 @@ def mfc_main(
         np.zeros(len(t)), np.zeros(len(t)), np.zeros(len(t)), np.zeros(len(t)), np.zeros(len(t)).astype(int), np.zeros(len(t)), np.zeros(len(t)), np.zeros(len(t))
     soc_ref, soc, fc, trq_ice, p_ice, p_fuel, trq_em, p_em, p_batt, i_batt, ef = \
         np.ones(len(t))*0.3, np.zeros(len(t)), np.zeros(len(t)), np.zeros(len(t)), np.zeros(len(t)), np.zeros(len(t)), np.zeros(len(t)), np.zeros(len(t)), np.zeros(len(t)), np.zeros(len(t)), np.zeros(len(t))
-    soc0 = 0.8
+    if hyd_mode == 'CD':
+        soc0 = 0.8
+    else:
+        soc0 = 0.3
     dw_gr_in = np.zeros(len(t))
 
     gs_cnt = 10
@@ -208,6 +211,7 @@ if __name__ == "__main__":
     # 7565 - Golf, https://www.cars-data.com/en/volkswagen-golf-2.0-tdi-150hp-highline-specs/59579
     # 26687 - Ioniq, https://www.cars-data.com/en/hyundai-ioniq-electric-comfort-specs/76078
     # 26712 - Niro, https://www.cars-data.com/en/kia-niro-1.6-gdi-hybrid-executiveline-specs/76106
+    # 55559 - Golf 8, https://www.cars-data.com/en/volkswagen-golf-1-4-ehybrid-204hp-style-specs/166618/tech, [f0, f1, f2] = [115.5, 0.106, 0.03217]
 
     cars = [
         # 0 - 'ICEV'
@@ -215,17 +219,17 @@ if __name__ == "__main__":
         # 1 - 'EV'
         [26687],
         # 2 - 'HEV'
-        [26712],
+        [26712, 55559],
     ]
 
-    car_id = cars[2][0]         # SELECT THE CAR
+    car_id = cars[2][1]         ### Changable, SELECT THE CAR 
     if car_id in cars[2]:
-        hyd_mode = ['CD', 'CS'][1]  # CD/CS, ONLY VALID FOR HEV, Na = not applicable
+        hyd_mode = ['CD', 'CS'][1]  ### Changable, CD/CS, ONLY VALID FOR HEV, Na = not applicable
     else:
         hyd_mode = 'Na'
 
-    driver_style = [1.0, 0.8, 0.6][0]
-    gs_style = [1.0, 0.8, 0.6][0]
+    driver_style = [1.0, 0.8, 0.6][2]   ### Changable
+    gs_style = [1.0, 0.8, 0.6][2]       ### Changable
     veh_load = 75 * 0
 
     db = rno.load_db_to_dictionary(db_name)
