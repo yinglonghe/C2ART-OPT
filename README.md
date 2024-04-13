@@ -25,3 +25,5 @@
 2. (Not recommended) PYTHON: Run the script of 'MAIN_platoon_mpc.py' in PYTHON. (I have not yet finalized this script because the solver (scipy.optimize.minimize) is unstable and not optimal in this case.)
 
 pyenv('Version', "C:\Users\leiti\miniconda3\envs\jrc\python.exe")
+
+conda env export > environment.yml

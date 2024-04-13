@@ -410,7 +410,7 @@ def optimization(
 
     CalExp_Names = Exp_Names[CalExpIDX]
 
-    CarID = int(CarMap.loc[CarMap[0] == CalVehID, 1].values) # ID used to search car specs.
+    CarID = int(CarMap.loc[CarMap[0] == CalVehID, 1].values[0]) # ID used to search car specs.
 
     parm_cstr, parm_cstr_mfc = setup_constraints(pathInput, CalVehID, CarID)
 
@@ -539,7 +539,7 @@ def validation(
     ######################################################
     # Setup parameters (validation only), cstr, and data #
     ######################################################
-    CarID = int(CarMap.loc[CarMap[0] == CalVehID, 1].values) # ID used to search car specs.
+    CarID = int(CarMap.loc[CarMap[0] == CalVehID, 1].values[0]) # ID used to search car specs.
 
     parm_cstr, parm_cstr_mfc = setup_constraints(pathInput, CalVehID, CarID)
 
