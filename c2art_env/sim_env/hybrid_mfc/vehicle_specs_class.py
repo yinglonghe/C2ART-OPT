@@ -189,6 +189,8 @@ class veh_specs(object):
                     self.fuel_turbo = my_car["Fuel Engine-Turbo"]
                     self.fuel_eng_capacity = float(my_car["Fuel Engine-Capacity"])
                     self.gearbox_type = str(my_car["General Specifications-Transmission"])
+                    self.battery_capacity = float(my_car["Electric Engine-Battery capacity"])  # kWh
+                    self.battery_voltage = float(my_car["Electric Engine-Battery voltage"])   # V
 
 
 class hardcoded_params(object):

@@ -414,3 +414,90 @@ def setup_yaml_ordered():
     yaml.add_representer(tuple, yaml.SafeDumper.represent_list)
     yaml.add_constructor(_MAPTAG, _construct_ordered_dict)
 
+
+def _clamp(value, limits):
+    lower, upper = limits
+    if value is None:
+        return None
+    elif (upper is not None) and (value > upper):
+        return upper
+    elif (lower is not None) and (value < lower):
+        return lower
+    return value
+
+
+class PID(object):
+    """A simple PID controller."""
+    # https://github.com/m-lundberg/simple-pid.git
+
+    def __init__(
+        self,
+        Kp=1.0,
+        Ki=0.0,
+        Kd=0.0,
+        dt=0.1,
+        output_limits=(None, None),
+    ):
+
+        self.Kp, self.Ki, self.Kd = Kp, Ki, Kd
+
+        self._proportional = 0
+        self._integral = 0
+        self._derivative = 0
+        self.dt=dt
+
+        self._last_output = None
+        self._last_input = None
+        self._last_error = None
+
+        self.output_limits = output_limits
+        self.reset()
+
+    def __call__(self, setpoint_, input_):
+        """
+        Update the PID controller.
+        """
+
+        # Compute error terms
+        error = setpoint_ - input_
+        # d_input = input_ - (self._last_input if (self._last_input is not None) else input_)
+        d_error = error - (self._last_error if (self._last_error is not None) else error)
+
+        # Compute the proportional term
+        self._proportional = self.Kp * error
+
+        # Compute integral and derivative terms
+        self._integral += self.Ki * error * self.dt
+        self._integral = _clamp(self._integral, self.output_limits)  # Avoid integral windup
+
+        self._derivative = self.Kd * d_error / self.dt
+
+        # Compute final output
+        output = self._proportional + self._integral + self._derivative
+        output = _clamp(output, self.output_limits)
+
+        # Keep track of state
+        self._last_output = output
+        self._last_input = input_
+        self._last_error = error
+
+        return output
+
+
+    def reset(self):
+        """
+        Reset the PID controller internals.
+        This sets each term to 0 as well as clearing the integral, the last output and the last
+        input (derivative calculation).
+        """
+        self._proportional = 0
+        self._integral = 0
+        self._derivative = 0
+
+        self._integral = _clamp(self._integral, self.output_limits)
+
+        self._last_output = None
+        self._last_input = None
+        self._last_error = None
+
+
