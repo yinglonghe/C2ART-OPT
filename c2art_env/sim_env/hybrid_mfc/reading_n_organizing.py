@@ -58,7 +58,7 @@ def get_vehicle_from_db(db_dict, car_id, **kwargs):
     elif my_car["Drive-Drive system"] in ['hybrid', 'plug-in hybrid']:
         powertrain = 'hybrid'
 
-    my_car_specs = vcc.veh_specs(my_car, powertrain, **kwargs)
+    my_car_specs = vcc.veh_specs(my_car, powertrain, lco=True, **kwargs)
 
     return my_car_specs
 
