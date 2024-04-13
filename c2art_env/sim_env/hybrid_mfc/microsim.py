@@ -764,7 +764,7 @@ def mfc_curves(
         acc_temp = []
         for i in range(len(curves[0])):
             acc_temp.append(float(curves[0][i](veh_model_speed[k])))
-        veh_model_acc_max.append(max(acc_temp))
+        veh_model_acc_max.append(max(max(acc_temp), 0.5))
         veh_model_acc.append(float(curves[0][int(gs_th(veh_model_speed[k]))](veh_model_speed[k])))
         veh_model_dec.append(min(dec_curve(veh_model_speed[k]), -1))
     acc_curve = interpolate.CubicSpline(
