@@ -688,6 +688,8 @@ def mfc_curves(
             ppar0, ppar1, ppar2 = 0.0045, -0.1710, -1.8835
         elif car_id == 7565:
             ppar0, ppar1, ppar2 = 0.0045, -0.1710, -1.8835
+        else:
+            ppar0, ppar1, ppar2 = 0.0045, -0.1710, -1.8835
 
         curves = driver.gear_curves(
             car,
@@ -701,6 +703,8 @@ def mfc_curves(
 
     elif car.powertrain in ['electric engine']:
         if car_id == 26687:
+            ppar0, ppar1, ppar2 = 0.0045, -0.1710, -1.8835
+        else:
             ppar0, ppar1, ppar2 = 0.0045, -0.1710, -1.8835
 
         curves = driver.ev_curves(
@@ -764,7 +768,7 @@ def mfc_curves(
         acc_temp = []
         for i in range(len(curves[0])):
             acc_temp.append(float(curves[0][i](veh_model_speed[k])))
-        veh_model_acc_max.append(max(acc_temp))
+        veh_model_acc_max.append(max(max(acc_temp), 0.5))
         veh_model_acc.append(float(curves[0][int(gs_th(veh_model_speed[k]))](veh_model_speed[k])))
         veh_model_dec.append(min(dec_curve(veh_model_speed[k]), -1))
     acc_curve = interpolate.CubicSpline(
