@@ -1,2 +1,2 @@
-# c2art-car-following-env
+# Optimisation tools for Connected, Coordinated and Automated Road Transport (C2ART) systems
  
